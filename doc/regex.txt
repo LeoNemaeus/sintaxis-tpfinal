@@ -1,0 +1,26 @@
+IDs:
+  L((_ | -)L | (_ | -)D | L | D)*
+
+constantes:
+  (- | e) DD* (.DD | e) (E (- | e)DD* | e)
+Operadores:
+  =
+  +
+  -
+  *
+  /
+Componenetes varios:
+  ;
+  ,
+  (
+  )
+Leer:
+  leer
+Escribir:
+  escribir
+Texto:
+  'C*'
+
+L: [a-z]
+D: [0-9]
+C: Todo caracter ASCII
