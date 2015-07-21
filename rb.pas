@@ -2,8 +2,11 @@ unit rb;
 
 interface
 type
+  tLlave = ^string;
+
   tDato = record
     n:string[4];        // *** N ES LA LLAVE EN LA ESTRUCTURA DE DATOS ***
+    llave:tLlave;
   end;
 
   arbol = ^nodo;
@@ -15,6 +18,8 @@ type
     color:boolean;
   end;
 
+  tFuncCmp = function (p1:Pointer; p2:Pointer): boolean;
+
   datoPila = ^nodo;
 
   pila = ^nodoPila;
@@ -25,6 +30,7 @@ type
 
   procedure crearArbol (var A:arbol);
   function insertarArbol(var a: arbol; nodo: tDato): Shortint;
+  function buscarArbol(var raiz:arbol; llave:tLlave): arbol;
   procedure inorden (var a:arbol);
 	//procedure buscar (A: arbol; buscado: word; var nodoC: tdato; var salir: boolean);
 
@@ -130,20 +136,23 @@ type
     aux := NIL;
     actual := a;
 
-    //*** ¡¡VER QUE LA LLAVE ES N ACÁ!!
-    while(not(vacio(actual)) AND (nodo.n <> actual^.info.n)) do
+    while(not(vacio(actual)) AND (nodo.llave^ <> actual^.info.llave^)) do
     begin
-      if (nodo.n < actual^.info.n) then
+      if (nodo.llave^ < actual^.info.llave^) then
         begin
-          aux := actual;
           if (actual <> NIL) then
-            actual := actual^.izq;
+            begin
+              aux := actual;
+              actual := actual^.izq;
+            end;
         end
       else
         begin
-          aux := actual;
           if (actual <> NIL) then
-            actual := actual^.der;
+            begin
+              aux := actual;
+              actual := actual^.der;
+            end;
         end;
     end;
 
@@ -156,6 +165,7 @@ type
         begin
           new(actual);
           actual^.info := nodo;
+          actual^.info.llave := @actual^.info.n;
           actual^.izq := NIL;
           actual^.der := NIL;
           actual^.color := true;
@@ -163,20 +173,22 @@ type
           a := actual;
           resultado := 0;
         end
-      else if (nodo.n < aux^.info.n) then
+      else if (nodo.llave^ < aux^.info.llave^) then
         begin
           new(actual);
           actual^.info := nodo;
+          actual^.info.llave := @actual^.info.n;
           actual^.izq := NIL;
           actual^.der := NIL;
           actual^.color := true;
           aux^.izq := actual;
           resultado := 0;
         end
-        else if (nodo.n > aux^.info.n) then
+        else if (nodo.llave^ > aux^.info.llave^) then
           begin
             new(actual);
             actual^.info := nodo;
+            actual^.info.llave := @actual^.info.n;
             actual^.izq := NIL;
             actual^.der := NIL;
             actual^.color := true;
@@ -240,48 +252,27 @@ type
 
   end;
 
-	// procedure buscarCodigo (A: arbol; buscado: word; var nodoC: ArtC; var salir: boolean);
-	// var
-	// 	j:word;
-	// 	aux:arbol;
-	// Begin
-	// 	salir:=false;
-	// 	if not arbolVacioA(A) then
-	// 	Begin
-	// 		aux:=A;
-	// 		if aux^.info.codigo = buscado then
-	// 			begin
-	// 			nodoC:= aux^.info
-	// 			end
-	// 		else
-	// 		Begin
-	// 			if aux^.info.codigo > buscado then
-	// 				buscarCodigo(aux^.izq, buscado, nodoC, salir)
-	// 			else
-	// 				buscarCodigo(aux^.der, buscado, nodoC, salir);
-	// 		end;
-	// 	end
-	// 	else
-	// 	Begin
-	// 		errorcod; //menu
-	// 		read(j);
-	// 		clrscr;
-	// 		if (j=1) then
-	// 		begin
-	// 			repetir; //menu
-	// 			read(buscado);
-	// 			buscarCodigo(A, buscado, nodoC, salir)
-	// 		end
-	// 		else salir:=true;
-	// 	end
-	// end;
+  function buscarArbol(var raiz:arbol; llave:tLlave): arbol;
+  var
+    actual:arbol;
+  begin
+    actual := raiz;
+    if (actual = NIL) then
+      buscarArbol := actual
+    else if (actual^.info.llave^ = llave^) then
+      buscarArbol := actual
+    else if (actual^.info.llave^ > llave^) then
+      buscarArbol(actual^.izq, llave)
+    else
+      buscarArbol(actual^.der, llave);
+  end;
 
   procedure inorden (var a:arbol);
   begin
     if (NOT(vacio(a))) then
     begin
       inorden(a^.izq);
-      writeln(a^.info.n);
+      writeln(a^.info.llave^);
       inorden(a^.der);
     end;
   end;

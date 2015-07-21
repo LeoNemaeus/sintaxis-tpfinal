@@ -5,13 +5,18 @@ uses rb;
 
 //implementation
 
-//function analizarCadena():shortint;
+procedure mostrarArbol(a:arbol);
+begin
+  writeln(a^.info.n);
+end;
+
 var
     // pila:pilaParser;
     // X:simbolo;
     // a:simboloCadena;
     // result: shortinteger;
     tree:arbol;
+    tree2:arbol;
     nuevo:tdato;
     resultado:shortint;
     c:string[4];
@@ -24,8 +29,9 @@ begin
       if (c <> ':q') then
         begin
           nuevo.n := c;
-          nuevo.llave := nuevo.n;
+          nuevo.llave := @nuevo.n;
           resultado := insertarArbol(tree, nuevo);
+
           if(resultado = 0) then
             writeln('Exito')
           else
@@ -35,6 +41,11 @@ begin
 
     if(resultado = 0) then
       inorden(tree);
+
+    writeln('Buscar: ');
+    readln(c);
+    tree2 := buscarArbol(tree, @c);
+    mostrarArbol(tree2);
   // push(pila, '$');
   // while (result = 1) do
   // begin
