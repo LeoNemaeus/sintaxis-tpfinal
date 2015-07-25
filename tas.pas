@@ -7,7 +7,7 @@ const
   tasy = 6;
 
 type
-  tEnumProduccion = (vacio, id, constante, puntoycoma, parentesis_abre, parentesis_cierra, epsilon, multiplicacion, division, suma, resta, asignacion, leer, escribir, texto, coma, A, Z, Q, H, N, S);
+  tEnumProduccion = (vacio, id, constante, puntoycoma, parentesis_abre, parentesis_cierra, epsilon, multiplicacion, division, suma, resta, asignacion, leer, escribir, texto, coma, A, Z, Q, H, N, S, peso);
   tVecTAS =  array[1..maxprod] of tEnumProduccion;
   tTas = array[1..tasy]of array [1..tasx] of tVecTAS;
 

@@ -1,7 +1,7 @@
 program parser;
 
 //interface
-uses rb;
+uses rb, tas, pila;
 
 //implementation
 
@@ -11,28 +11,28 @@ begin
 end;
 
 var
-    // pila:pilaParser;
-    // X:simbolo;
-    // a:simboloCadena;
-    // result: shortinteger;
-    tree:arbol;
-    tree2:arbol;
-    nuevo:tdato;
-    resultado:shortint;
-    c:string[4];
+    simbolo_pesos:datoPila;
+    simbolo_inicial:datoPila;
+    simbolo_actual:datoPila;
 begin
 
-  push(P, $);
-  push(p, );
+  simbolo_pesos.arbolito := ^;
+  simbolo_pesos.simbolo := (peso);
+
+  simbolo_inicial.arbolito := ^;
+  simbolo_inicial.simbolo := X;       // DEBE RECIBIR COMO ENTRADA LA X, ES DE TIPO tEnumTAS
+
+  push(P, simbolo_pesos);
+  push(p, simbolo_inicial);
 
   resultado := 0;
 
   obtener_simbolo(a);
   repeat
   begin
-    pop(p, x);
+    pop(p, simbolo_actual);
 
-    if (terminal(x.simbolo)) then
+    if (terminal(simbolo_actual.simbolo)) then
       begin
         if (x = a) then
           obtener_simbolo(a)
@@ -40,9 +40,9 @@ begin
           resultado := -1;
       end;
 
-    if variable(x.simbolo) then
+    if variable(simbolo_actual.simbolo) then
       begin
-        tas(x.simbolo, a) = v;
+        tas(simbolo_actual.simbolo, a) = v;
 
         if (v[1] = '') then
           resultado := -1
@@ -51,7 +51,7 @@ begin
             while(v[i] <> '') do
             begin
               aux.simbolo := v[i];
-              aux.nodo := insertarArbol(x^.nodo^.vector[i], v[i]);
+              aux.arbolito := insertarArbol(simbolo_actual^.nodo^.vector[i], v[i]);
               push(auxPila, aux);
               inc(i);
             end;

@@ -1,10 +1,13 @@
 unit pila;
 
 interface
-uses rb;
+uses rb, tas;
 
 type
-  datoPila = ^nodo;
+  datoPila = record
+    arbolito:^nodo;
+    simbolo:tEnumProduccion;
+  end;
   tPila = ^nodoPila;
   nodoPila = record
     info: datoPila;
@@ -45,7 +48,11 @@ begin
       tope := tope^.sig;
       dispose(aux);
     end
-    else dato := NIL;
+    else
+    begin
+      dato.arbolito := NIL;
+      dato.simbolo := (vacio);
+    end;
 end;
 
 end.

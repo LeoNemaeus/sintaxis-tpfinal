@@ -1,11 +1,9 @@
 unit rb;
 
 interface
+uses tas;
+
 type
-  // ###########REMOVER!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-  tVecTAS =  array[0..7] of string[2];
-
-
   tLlave = ^string;
 
   tDato = record
@@ -38,6 +36,7 @@ type
     begin
       new(arbol);
       arbol^.info := vector;
+      insertarArbol := 1;
     end;
   end;
 
