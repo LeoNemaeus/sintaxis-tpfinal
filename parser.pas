@@ -21,52 +21,50 @@ var
     resultado:shortint;
     c:string[4];
 begin
-  tree := NIL;
-  c:='';
-  while(c <> ':q') do
-    begin
-      readln(c);
-      if (c <> ':q') then
-        begin
-          nuevo.n := c;
-          nuevo.llave := @nuevo.n;
-          resultado := insertarArbol(tree, nuevo);
 
-          if(resultado = 0) then
-            writeln('Exito')
-          else
-            write('Error!');
-        end;
-    end;
+  push(P, $);
+  push(p, );
 
-    if(resultado = 0) then
-      inorden(tree);
+  resultado := 0;
 
-    writeln('Buscar: ');
-    readln(c);
-    tree2 := buscarArbol(tree, @c);
-    mostrarArbol(tree2);
-  // push(pila, '$');
-  // while (result = 1) do
-  // begin
-  //   pop(pila, X);
-  //   if(es_terminal(X)) then
-  //     begin
-  //       if(X=a)
-  //         begin
-  //           if (X='$') hen result = 0;
-  //           else obtener_simbolo(a);
-  //         end
-  //       else result := -1;
-  //     end
-  //   else if(tas(X, a) = $) then result = -1
-  //   else
-  //     begin
-  //       s_aux := tas(X, a);
-  //       rb_insertar(s_aux[1]);
-  //       rb_insertar(s_aux[2]);
-  //     end;
-  // end;
-  // analizarCadena := -1
+  obtener_simbolo(a);
+  repeat
+  begin
+    pop(p, x);
+
+    if (terminal(x.simbolo)) then
+      begin
+        if (x = a) then
+          obtener_simbolo(a)
+        else
+          resultado := -1;
+      end;
+
+    if variable(x.simbolo) then
+      begin
+        tas(x.simbolo, a) = v;
+
+        if (v[1] = '') then
+          resultado := -1
+        else
+          begin
+            while(v[i] <> '') do
+            begin
+              aux.simbolo := v[i];
+              aux.nodo := insertarArbol(x^.nodo^.vector[i], v[i]);
+              push(auxPila, aux);
+              inc(i);
+            end;
+
+            while(i > 0) do
+            begin
+              pop(auxPila, aux);
+              push(pila, aux);
+              dec(i);
+            end;
+          end;
+      end;
+  end
+  until (resultado <> 0);
 
 end.
