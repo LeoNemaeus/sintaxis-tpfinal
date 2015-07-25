@@ -1,27 +1,32 @@
-IDs:
+91) IDs:
   L((_ | -)L | (_ | -)D | L | D)*
 
-constantes:
-  (- | e) DD* (.DD | e) (E (- | e)DD* | e)
+2) constantes:
+  (- | e) DD* (.DD* | e) (E (- | e)DD* | e)
+  
+  
+  
 Operadores:
-  =
-  +
-  -
-  *
-  /
+3)  =
+4)  +
+5)  -
+6)  *
+7)  /
 Componenetes varios:
-  ;
-  ,
-  (
-  )
+8) 	 ;
+9) 	 .
+10)	 (
+11)	 )
 Leer:
-  leer
+12)	  leer
 Escribir:
-  escribir
+13) 	 escribir
 Texto:
-  'C*'
+14 	 'C*'
 
+15)  Epsilon
 L: [a-z]
 D: [0-9]
 C: Todo caracter ASCII
 '''
+: Todo caracter ASCII
