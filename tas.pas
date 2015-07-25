@@ -1,14 +1,14 @@
 unit tas;
 
 interface
+uses scanner;
 const
   maxprod = 8;
   tasx = 12;
   tasy = 6;
 
 type
-  tEnumProduccion = (vacio, id, constante, puntoycoma, parentesis_abre, parentesis_cierra, epsilon, multiplicacion, division, suma, resta, asignacion, leer, escribir, texto, coma, A, Z, Q, H, N, S, peso);
-  tVecTAS =  array[1..maxprod] of tEnumProduccion;
+  tVecTAS =  array[1..maxprod] of sigma;
   tTas = array[1..tasy]of array [1..tasx] of tVecTAS;
 
 const
@@ -23,7 +23,7 @@ const
   );
 
 
-function tas(produccion:tEnumProduccion; simbolo:tEnumProduccion):tVecTAS;
+function tas(produccion:sigma; simbolo:sigma):tVecTAS;
 
 
 
@@ -44,7 +44,7 @@ begin
   tVecTAS_Vacio := resultado;
 end; // ### FIN FUNCTION tElemTas_Vacio
 
-function tas(produccion:tEnumProduccion; simbolo:tEnumProduccion):tVecTAS;
+function tas(produccion:sigma; simbolo:sigma):tVecTAS;
 var
   i:shortint;
   j:shortint;
