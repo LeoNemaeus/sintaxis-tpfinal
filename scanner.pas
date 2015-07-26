@@ -91,5 +91,47 @@ Begin
   End;
 End;
 
+Function id(texto:String):Boolean;
+Const
+  q0=0;
+  F=[0];
+Type
+  Q=0..2;
+  sigma=(L, D, , G, O);
+  t_delta=Array[Q,sigma] of Q;
+Var
+  control:Integer;
+  estact:Q;
+  delta:t_delta;
+Begin 
+  delta[0,L]:=1;
+  delta[0,D]:=2;
+  delta[0,G]:=2;
+  delta[0,O]:=2;
+  delta[1,L]:=1;
+  delta[1,D]:=1;
+  delta[1,G]:=1;
+  delta[1,O]:=2;
+  delta[2,L]:=2;
+  delta[2,D]:=2;
+  delta[2,G]:=2;
+  delta[2,O]:=2;
+  estact:=q0;
+  For control:=1 to Length(texto) do
+    estact:=delta[estact,simboloID(texto[control])];
+  id:=estact in F;
+End;
+
+Function simboloID(Car:Char):sigma;
+Begin 
+  Case Car of
+    'a'..'z', 'A'..'Z':simboloID:=L;
+    '0'..'9'	     :simboloID:=D;
+	'_' : simboloID:= G
+  else  
+   simboloID:=O
+  End;
+End;
+
 
 End.
