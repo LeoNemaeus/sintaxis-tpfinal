@@ -4,6 +4,17 @@ interface
 
 implementation
 
+{ Type
+  sigma=(L, D, G, O);
+{ var
+	L: byte;
+	D: byte;
+	O: byte;
+	G:byte;
+	sigma: set of byte; }
+ }
+
+
 Function EsID(texto:String):Boolean;
 Const
   q0=0;
@@ -16,7 +27,19 @@ Var
   control:Integer;
   estact:Q;
   delta:t_delta;
-Begin 
+
+  Function simboloID(Car:Char): sigma;
+Begin
+  Case Car of
+    'a'..'z', 'A'..'Z':simboloID:=L;
+    '0'..'9'	     :simboloID:=D;
+	'_' : simboloID:= G
+  else
+   simboloID:=O
+  End;
+End;
+
+Begin
   delta[0,L]:=1;
   delta[0,D]:=2;
   delta[0,G]:=2;
@@ -31,86 +54,81 @@ Begin
   delta[2,O]:=2;
   estact:=q0;
   For control:=1 to Length(texto) do
-    estact:=delta[estact,simboloID(texto[control])];
+    estact:=delta[estact, simboloID(texto[control])];
   EsID:=estact in F;
 End;
 
-Function simboloID(Car:Char):sigma;
-Begin 
-  Case Car of
-    'a'..'z', 'A'..'Z':simboloID:=L;
-    '0'..'9'	     :simboloID:=D;
-	'_' : simboloID:= G
-  else  
-   simboloID:=O
-  End;
-End;
+
 
 Function EsConstReales(texto:String):Boolean;
 Const
   q0=0;
-  F=[7];
+  F=[4,2, 7];
 Type
   Q=0..8;
-  sigma=(D, epsi, menos, punto, E, O);
+  sigma=(D, menos, punto, E, O);
   t_delta=Array[Q,sigma] of Q;
 Var
   control:Integer;
   estact:Q;
   delta:t_delta;
-Begin 
+
+  Function simbCONS(Car:Char):sigma;
+Begin
+  Case Car of
+    '0'..'9' :simbCONS:=D;
+	'-' : simbCONS:= menos;
+	'.' : simbCONS:= punto;
+	'e', 'E' : simbCONS:= E;
+  else
+   simbCONS:=O
+  End;
+End;
+
+Begin
   delta[0,D]:=2;
-  delta[0,epsi]:=0;
   delta[0,menos]:=1;
   delta[0,punto]:=8;      { 8=muerto }
   delta[0,E]:=8;
   delta[0,O]:=8;
   delta[1,D]:=2;
-  delta[1,epsi]:=1;
   delta[1,menos]:=8;
-  delta[1,punto]:=8;      
-  delta[1,E]:=8; 
+  delta[1,punto]:=8;
+  delta[1,E]:=8;
   delta[1,O]:=8;
   delta[2,D]:=2;
-  delta[2,epsi]:=4;
   delta[2,menos]:=8;
-  delta[2,punto]:=3;      
+  delta[2,punto]:=3;
   delta[2,E]:=5;
   delta[2,O]:=8;
   delta[3,D]:=4;
-  delta[3,epsi]:=3;
   delta[3,menos]:=8;
-  delta[3,punto]:=8;      
+  delta[3,punto]:=8;
   delta[3,E]:=8;
   delta[3,O]:=8;
   delta[4,D]:=4;
-  delta[4,epsi]:=7;
   delta[4,menos]:=8;
-  delta[4,punto]:=8;      
+  delta[4,punto]:=8;
   delta[4,E]:=5;
   delta[4,O]:=8;
   delta[5,D]:=7;
-  delta[5,epsi]:=5;
   delta[5,menos]:=6;
-  delta[5,punto]:=8;      
+  delta[5,punto]:=8;
   delta[5,E]:=8;
   delta[5,O]:=8;
   delta[6,D]:=7;
-  delta[6,epsi]:=6;
   delta[6,menos]:=8;
-  delta[6,punto]:=8;      
+  delta[6,punto]:=8;
   delta[6,E]:=8;
   delta[6,O]:=8;
   delta[7,D]:=7;
-  delta[7,epsi]:=7;
   delta[7,menos]:=8;
-  delta[7,punto]:=8;      
+  delta[7,punto]:=8;
   delta[7,E]:=8;
   delta[7,O]:=8;
   delta[8,D]:=8;
-  delta[8,epsi]:=8;
   delta[8,menos]:=8;
-  delta[8,punto]:=8;      
+  delta[8,punto]:=8;
   delta[8,E]:=8;
   delta[8,O]:=8;
   estact:=q0;
@@ -119,18 +137,6 @@ Begin
   EsConstReales:=estact in F;
 End;
 
-Function simbCONS(Car:Char):sigma;
-Begin 
-  Case Car of
-    '' :simbCONS:=epsi;
-    '0'..'9' :simbCONS:=D;
-	'-' : simbCONS:= menos;
-	'.' : simbCONS:= punto;
-	'e', 'E' : simbCONS:= E;
-  else  
-   simbCONS:=O
-  End;
-End;
 
 Function EsConstIgual(texto:String):Boolean;
 Const
@@ -144,7 +150,16 @@ Var
   control:Integer;
   estact:Q;
   delta:t_delta;
-Begin 
+
+ Function simbIGUAL(Car:Char):sigma;
+Begin
+  if Car = '=' then
+	simbIGUAL:=igual
+  else
+   simbIGUAL:=O
+End;
+
+Begin
   delta[0,igual]:=1;
   delta[0,O]:=2;
   delta[1,igual]:=2;
@@ -153,14 +168,6 @@ Begin
   For control:=1 to Length(texto) do
     estact:=delta[estact,simbIGUAL(texto[control])];
   EsConstIgual:=estact in F;
-End;
-
-Function simbIGUAL(Car:Char):sigma;
-Begin 
-  if Car = '=' then
-	simbIGUAL:=igual;
-  else  
-   simbIGUAL:=O
 End;
 
 Function EsConstMenos(texto:String):Boolean;
@@ -175,7 +182,15 @@ Var
   control:Integer;
   estact:Q;
   delta:t_delta;
-Begin 
+  Function simbmenos(Car:Char):sigma;
+Begin
+  if Car = '-' then
+	simbmenos:=menos
+  else
+   simbmenos:=O
+End;
+
+Begin
   delta[0,menos]:=1;
   delta[0,O]:=2;
   delta[1,menos]:=2;
@@ -186,13 +201,7 @@ Begin
   EsConstMenos:=estact in F;
 End;
 
-Function simbmenos(Car:Char):sigma;
-Begin 
-  if Car = '-' then
-	simbmenos:=menos;
-  else  
-   simbmenos:=O
-End;
+
 
 Function EsConstMas(texto:String):Boolean;
 Const
@@ -206,7 +215,16 @@ Var
   control:Integer;
   estact:Q;
   delta:t_delta;
-Begin 
+
+ Function simbmas(Car:Char):sigma;
+Begin
+  if Car = '+' then
+	simbmas:=mas
+  else
+   simbmas:=O
+End;
+
+Begin
   delta[0,mas]:=1;
   delta[0,O]:=2;
   delta[1,mas]:=2;
@@ -217,13 +235,7 @@ Begin
   EsConstMas:=estact in F;
 End;
 
-Function simbmas(Car:Char):sigma;
-Begin 
-  if Car = '+' then
-	simbmas:=mas;
-  else  
-   simbmas:=O
-End;
+
 
 Function EsConstPor(texto:String):Boolean;
 Const
@@ -237,7 +249,16 @@ Var
   control:Integer;
   estact:Q;
   delta:t_delta;
-Begin 
+
+ Function simbpor(Car:Char):sigma;
+Begin
+  if Car = '*' then
+	simbpor:=por
+  else
+   simbpor:=O
+End;
+
+Begin
   delta[0,por]:=1;
   delta[0,O]:=2;
   delta[1,por]:=2;
@@ -248,13 +269,7 @@ Begin
   EsConstPor:=estact in F;
 End;
 
-Function simbpor(Car:Char):sigma;
-Begin 
-  if Car = '*' then
-	simbpor:=por;
-  else  
-   simbpor:=O
-End;
+
 
 Function EsConstDividido(texto:String):Boolean;
 Const
@@ -268,7 +283,16 @@ Var
   control:Integer;
   estact:Q;
   delta:t_delta;
-Begin 
+
+Function simbdividido(Car:Char):sigma;
+Begin
+  if Car = '/' then
+	simbdividido:=dividido
+  else
+   simbdividido:=O
+End;
+
+Begin
   delta[0,dividido]:=1;
   delta[0,O]:=2;
   delta[1,dividido]:=2;
@@ -279,13 +303,7 @@ Begin
   EsConstDividido:=estact in F;
 End;
 
-Function simbdividido(Car:Char):sigma;
-Begin 
-  if Car = '/' then
-	simbdividido:=dividido;
-  else  
-   simbdividido:=O
-End;
+
 
 Function EsConstPuntoycoma(texto:String):Boolean;
 Const
@@ -299,7 +317,16 @@ Var
   control:Integer;
   estact:Q;
   delta:t_delta;
-Begin 
+
+Function simbpyc(Car:Char):sigma;
+Begin
+  if Car = ';' then
+	simbpyc:=pyc
+  else
+   simbpyc:=O
+End;
+
+Begin
   delta[0,pyc]:=1;
   delta[0,O]:=2;
   delta[1,pyc]:=2;
@@ -310,13 +337,7 @@ Begin
   EsConstPuntoycoma:=estact in F;
 End;
 
-Function simbpyc(Car:Char):sigma;
-Begin 
-  if Car = ';' then
-	simbpyc:=pyc;
-  else  
-   simbpyc:=O
-End;
+
 
 Function EsConstPunto(texto:String):Boolean;
 Const
@@ -330,7 +351,16 @@ Var
   control:Integer;
   estact:Q;
   delta:t_delta;
-Begin 
+
+Function simbpunto(Car:Char):sigma;
+Begin
+  if Car = '.' then
+	simbpunto:=punto
+  else
+   simbpunto:=O
+End;
+
+Begin
   delta[0,punto]:=1;
   delta[0,O]:=2;
   delta[1,punto]:=2;
@@ -341,13 +371,7 @@ Begin
   EsConstPunto:=estact in F;
 End;
 
-Function simbpunto(Car:Char):sigma;
-Begin 
-  if Car = '.' then
-	simbpunto:=punto;
-  else  
-   simbpunto:=O
-End;
+
 
 Function EsConstParA(texto:String):Boolean;
 Const
@@ -361,7 +385,17 @@ Var
   control:Integer;
   estact:Q;
   delta:t_delta;
-Begin 
+
+Function simbparA(Car:Char):sigma;
+Begin
+  if Car = '(' then
+	simbparA:=parA
+  else
+   simbparA:=O
+End;
+
+
+Begin
   delta[0,parA]:=1;
   delta[0,O]:=2;
   delta[1,parA]:=2;
@@ -372,13 +406,7 @@ Begin
   EsConstParA:=estact in F;
 End;
 
-Function simbparA(Car:Char):sigma;
-Begin 
-  if Car = '(' then
-	simbparA:=parA;
-  else  
-   simbparA:=O
-End;
+
 
 Function EsConstParC(texto:String):Boolean;
 Const
@@ -392,7 +420,16 @@ Var
   control:Integer;
   estact:Q;
   delta:t_delta;
-Begin 
+
+Function simbparC(Car:Char):sigma;
+Begin
+  if Car = ')' then
+	simbparC:=parC
+  else
+   simbparC:=O
+End;
+
+Begin
   delta[0,parC]:=1;
   delta[0,O]:=2;
   delta[1,parC]:=2;
@@ -403,13 +440,7 @@ Begin
   EsConstParC:=estact in F;
 End;
 
-Function simbparC(Car:Char):sigma;
-Begin 
-  if Car = ')' then
-	simbparC:=parC;
-  else  
-   simbparC:=O
-End;
+
 
 Function EsConstLEER(texto:String):Boolean;
 Const
@@ -423,7 +454,19 @@ Var
   control:Integer;
   estact:Q;
   delta:t_delta;
-Begin 
+
+Function simbLEER(Car:Char):sigma;
+Begin
+  Case Car of
+    'L','l'  :simbLEER:=L;
+    'E', 'e' :simbLEER:=E;
+	'R', 'r' : simbLEER:= R
+  else
+   simbLEER:=O
+  End;
+End;
+
+Begin
   delta[0,L]:=1;
   delta[0,E]:=5;
   delta[0,R]:=5;
@@ -450,16 +493,7 @@ Begin
   EsConstLEER:=estact in F;
 End;
 
-Function simbLEER(Car:Char):sigma;
-Begin 
-  Case Car of
-    'L','l'  :simbLEER:=L;
-    'E', 'e' :simbLEER:=E;
-	'R', 'r' : simbLEER:= R
-  else  
-   simbLEER:=O
-  End;
-End;
+
 
 Function EsConstESCRIBIR(texto:String):Boolean;
 Const
@@ -473,7 +507,22 @@ Var
   control:Integer;
   estact:Q;
   delta:t_delta;
-Begin 
+
+Function simbESCRI(Car:Char):sigma;
+Begin
+  Case Car of
+    'E', 'e' :simbESCRI:=E;
+    'S','s'  :simbESCRI:=S;
+	'C', 'c' : simbESCRI:= C;
+	'R', 'r' : simbESCRI:= R;
+	'I', 'i' : simbESCRI:= I;
+	'B', 'b' : simbESCRI:= B;
+  else
+   simbESCRI:=O
+  End;
+End;
+
+Begin
   delta[0,E]:=1;
   delta[0,S]:=9;
   delta[0,C]:=9;
@@ -550,19 +599,7 @@ Begin
   EsConstESCRIBIR:=estact in F;
 End;
 
-Function simbESCRI(Car:Char):sigma;
-Begin 
-  Case Car of
-    'E', 'e' :simbESCRI:=E;
-    'S','s'  :simbESCRI:=S;
-	'C', 'c' : simbESCRI:= C;
-	'R', 'r' : simbESCRI:= R;
-	'I', 'i' : simbESCRI:= I;
-	'B', 'b' : simbESCRI:= B;
-  else  
-   simbESCRI:=O
-  End;
-End;
+
 
 Function EsConstCADENA(texto:String):Boolean;
 Const
@@ -576,9 +613,19 @@ Var
   control:Integer;
   estact:Q;
   delta:t_delta;
-Begin 
+
+Function simbCAD(Car:Char):sigma;
+Begin
+  Case Car of
+    '''' :simbCAD:=C;
+  else
+   simbCAD:=O
+  End;
+End;
+
+Begin
   delta[0,C]:=1;
-  delta[0,O]:=3;  
+  delta[0,O]:=3;
   delta[1,C]:=2;
   delta[1,O]:=1;
   delta[2,C]:=3;
@@ -591,12 +638,4 @@ Begin
   EsConstCADENA:=estact in F;
 End;
 
-Function simbCAD(Car:Char):sigma;
-Begin 
-  Case Car of
-    '''' :simbCAD:=C;
-  else  
-   simbCAD:=O
-  End;
-End;
 End.
