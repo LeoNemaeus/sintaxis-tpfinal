@@ -19,8 +19,12 @@ begin
   simbolo_pesos.arbolito := ^;
   simbolo_pesos.simbolo := (peso);
 
-  simbolo_inicial.arbolito := ^;
-  simbolo_inicial.simbolo := X;       // DEBE RECIBIR COMO ENTRADA LA X, ES DE TIPO tEnumTAS
+  crearArbol(A);
+
+  insertarArbol(A,S);
+
+  simbolo_inicial.arbolito := A;
+  simbolo_inicial.simbolo := S;       // DEBE RECIBIR COMO ENTRADA LA X, ES DE TIPO tEnumTAS
 
   push(P, simbolo_pesos);
   push(p, simbolo_inicial);

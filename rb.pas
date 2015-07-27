@@ -30,13 +30,12 @@ type
 
 	implementation
 
-  function insertarArbol(var arbol:tArbol; vector:tVecTAS):shortint;
+  Procedure insertarArbol(var arbol:tArbol; simbolo:tVecTAS);
   begin
     if (arbol = NIL) then
     begin
       new(arbol);
-      arbol^.info := vector;
-      insertarArbol := 1;
+      arbol^.info := simbolo;
     end;
   end;
 
