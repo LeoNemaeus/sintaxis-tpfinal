@@ -60,7 +60,7 @@ begin
   else if simbolo = (escribir)        then j := 2
   else if simbolo = (puntoycoma)      then j := 3
   else if simbolo = (parentesis_abre) then j := 4
-  else if simbolo = (parentesis_abre) then j := 5
+  else if simbolo = (parentesis_cierra) then j := 5
   else if simbolo = (suma)            then j := 6
   else if simbolo = (resta)           then j := 7
   else if simbolo = (multiplicacion)  then j := 8

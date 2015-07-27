@@ -4,21 +4,11 @@
 			id						por						errorLexico
 			leer					dividido
 			escribir				parA
-			igual					parC 
-			
-	Holaaa!! Hay un despelote bastante grande... El ultimo procedimiento que
-	agregué que se llama ObtenerSiguienteCompLex (no me odien por el nombre)
-	Lo que hace es buscar caracter por caracter hasta encontrar un espacio o una simbolo
-	(simbolos son = + - . () ; / * ) cuando encuetra eso para y busca en la cadena que le quedo
-	que tipo de componente lexico es. Si es id lo guarda en la tabla de simbolos (TS) que
-	en este caso es una lista
-	Revisen!! jaja			
-			}
+			igual					parC }
 
 unit scanner;
 
 interface
-uses	archivos;
 type
 	dato= Record
 			nom: string;
@@ -672,13 +662,10 @@ Var
 	ant: punt;
 	act: punt;
 	x: dato;
-	posi: longint;
 Begin
-	posi:= control;
-	posi:= posi-Length(lexema);			//hace que la posicion que guarda en la TS sea la posicion donde empieza ese id en el archivo
 	x.nom:= 'ID';
 	x.valor:= lexema;
-	x.posicion:= posi;
+	x.posicion:= control;
 	new(dir);
 	dir^.info := x;
 	if (TS.cab = nil) or (TS.cab^.info.posicion > x.posicion) then
@@ -776,7 +763,6 @@ end;
 function EsSimbolo(var lexema: string): boolean;
 var
 	res: boolean;
-	CompLex: TipoComplex;
 begin
 	revisarSimbolo(lexema, CompLex, res);
 	if res then
@@ -786,10 +772,10 @@ begin
 end;
 
 
-Procedure ObtenerSiguienteCompLex(Var archivo:textfile;Var Control:Longint; Var CompLex:TipoComplex;Var Lexema:String;Var TS:lista);
+Procedure ObtenerSiguienteCompLex(Var archivo:textfile;Var Control:Longint; Var CompLex:TipoComplex;Var Lexema:String;Var TS:TablaDeSimbolos);
 var
 	T: string;
-	res: boolean; 
+{ 	res: boolean; }
 begin
 	repeat																{ buscarCompLex INICIO}
 		T:=leerCaracter(archivo);
@@ -800,7 +786,6 @@ begin
 		T:=leerCaracter(archivo);
 		control:=control+1;
 	until ((T= ' ') or (EsSimbolo(T)));										{ buscarCompLex FIN}
-	control:= control-1;
 	If (EsID(lexema)) then												{CalcularCompLex INICIO}
 		insertarTS(lexema, compLex, control, TS)
 	else
