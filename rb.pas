@@ -1,7 +1,7 @@
 unit rb;
 
 interface
-uses tas;
+uses tas, scanner;
 
 type
   tLlave = ^string;
@@ -13,7 +13,7 @@ type
 
   tarbol = ^nodo;
   nodo = Record
-    info: tVecTAS;
+    info: tSigma;
     hijos:array[0..7] of tarbol;
     padre: tArbol;
     color:boolean;
@@ -21,8 +21,8 @@ type
 
   tFuncCmp = function (p1:Pointer; p2:Pointer): boolean;
 
-  // procedure crearArbol (var A:arbol);
-  // function insertarArbol(var a: arbol; nodo: tDato): Shortint;
+  procedure crearArbol(var arbol:tArbol);
+  procedure insertarArbol(var arbol:tArbol; simbolo:tSigma);
   // function buscarArbol(var raiz:arbol; llave:tLlave): arbol;
   // procedure inorden (var a:arbol);
 
@@ -30,7 +30,12 @@ type
 
 	implementation
 
-  Procedure insertarArbol(var arbol:tArbol; simbolo:tVecTAS);
+  procedure crearArbol(var arbol:tArbol);
+  begin
+    arbol := nil;
+  end;
+
+  Procedure insertarArbol(var arbol:tArbol; simbolo:tSigma);
   begin
     if (arbol = NIL) then
     begin

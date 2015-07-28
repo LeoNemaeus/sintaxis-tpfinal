@@ -17,7 +17,8 @@ implementation
 
 function abrirArchivo(var archivo:TextFile; ruta:string):boolean;
 begin
-  try
+  {$I-}
+  {try
     reset(archivo);
   finally
     try
@@ -26,9 +27,13 @@ begin
     finally
       abrirArchivo := false;
     end;  // ### FIN DE TRY 2
-  end;  // ### FIN DE TRY 1
+  end;  // ### FIN DE TRY 1}
+
+  assignFile(archivo, ruta);
+  reset(archivo);
 
   abrirArchivo := true;
+  {$I+}
 end;  // ### FIN DE abrirArchivo
 
 procedure cerrarArchivo(var archivo:TextFile);

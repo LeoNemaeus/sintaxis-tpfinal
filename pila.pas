@@ -1,12 +1,12 @@
 unit pila;
 
 interface
-uses rb, tas;
+uses rb, tas, scanner;
 
 type
   datoPila = record
     arbolito:^nodo;
-    simbolo:tEnumProduccion;
+    simbolo:tSigma;
   end;
   tPila = ^nodoPila;
   nodoPila = record
@@ -14,10 +14,16 @@ type
     sig: tPila;
   end;
 
+procedure crearPila(var pila:tPila);
 procedure push (var tope:tPila; var dato:datoPila);
 procedure pop(var tope:tPila; var dato:datoPila);
 
 implementation
+procedure crearPila(var pila:tPila);
+begin
+  pila := nil;
+end;
+
 procedure push (var tope:tPila; var dato:datoPila);
 var
   aux:tPila;

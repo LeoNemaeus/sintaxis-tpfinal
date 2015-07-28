@@ -4,15 +4,8 @@
 			id						por						errorLexico
 			leer					dividido
 			escribir				parA
-			igual					parC 
-			
-	Holaaa!! Hay un despelote bastante grande... El ultimo procedimiento que
-	agregué que se llama ObtenerSiguienteCompLex (no me odien por el nombre)
-	Lo que hace es buscar caracter por caracter hasta encontrar un espacio o una simbolo
-	(simbolos son = + - . () ; / * ) cuando encuetra eso para y busca en la cadena que le quedo
-	que tipo de componente lexico es. Si es id lo guarda en la tabla de simbolos (TS) que
-	en este caso es una lista
-	Revisen!! jaja			
+			igual					parC
+
 			}
 
 unit scanner;
@@ -20,6 +13,10 @@ unit scanner;
 interface
 uses	archivos;
 type
+	//tSigma = (vacio, epsilon, peso, S, A, Q, Z, H, N, escribir, leer, parA, parC, mas, menos, por, dividido, cadena, coma, puntoycoma, id, punto, ConsReal, igual);
+	tSigma = (escribir, leer, parA, parC, mas, menos, por, dividido, cadena, coma, puntoycoma, id, punto, ConsReal, igual, ErrorLexico, vacio, epsilon, peso, S, A, Q, Z, H, N);
+	TipoComplex = escribir..peso;
+	TipoVariables = S..N;
 	dato= Record
 			nom: string;
 			valor: string;
@@ -35,13 +32,18 @@ type
 			tam: word;
 			end;
 
-{ const }
-	TipoComplex= (ConsReal, cadena, id, leer, escribir, igual, mas, menos, por, dividido, parA, parC, punto, puntoycoma, ErrorLexico);
 
-var
-	TS: lista;
-	
+
+{ const }
+	//TipoComplex= (ConsReal, cadena, id, leer, escribir, igual, mas, menos, por, coma, dividido, parA, parC, punto, puntoycoma, ErrorLexico);
+	procedure crearTS (var ts:lista);
+	Procedure ObtenerSiguienteCompLex(Var archivo:textfile;Var Control:Longint; Var CompLex:TipoComplex;Var Lexema:String;Var TS:lista);
+	procedure insertarTS (var lexema: string; compLex: TipoComplex; var control: longint; var TS: lista);
+
+
+
 implementation
+
 
 Function EsID(texto:String):Boolean;
 Const
@@ -210,13 +212,14 @@ Var
   control:Integer;
   estact:Q;
   delta:t_delta;
-  Function simbmenos(Car:Char):sigma;
-Begin
-  if Car = '-' then
-	simbmenos:=menos
-  else
-   simbmenos:=O
-End;
+
+		Function simbmenos(Car:Char):sigma;
+		Begin
+		  if Car = '-' then
+			simbmenos:=menos
+		  else
+		   simbmenos:=O
+		End;
 
 Begin
   delta[0,menos]:=1;
@@ -434,6 +437,38 @@ Begin
   EsConstParA:=estact in F;
 End;
 
+Function Escoma(texto:String):Boolean;
+Const
+  q0=0;
+  F=[1];
+Type
+  Q=0..2;
+  sigma=(coma, O);
+  t_delta=Array[Q,sigma] of Q;
+Var
+  control:Integer;
+  estact:Q;
+  delta:t_delta;
+
+Function simcoma(Car:Char):sigma;
+Begin
+  if Car = ',' then
+	simcoma:=coma
+  else
+   simcoma:=O
+End;
+
+
+Begin
+  delta[0,coma]:=1;
+  delta[0,O]:=2;
+  delta[1,coma]:=2;
+  delta[1,O]:=2;
+  estact:=q0;
+  For control:=1 to Length(texto) do
+    estact:=delta[estact,simcoma(texto[control])];
+  EsComa:=estact in F;
+End;
 
 
 Function EsConstParC(texto:String):Boolean;
@@ -665,7 +700,11 @@ Begin
     estact:=delta[estact,simbCAD(texto[control])];
   EsCADENA:=estact in F;
 End;
-
+procedure crearTS (var ts:lista);
+begin
+	ts.cab := nil;
+	ts.tam := 0;
+end;
  procedure insertarTS (var lexema: string; compLex: TipoComplex; var control: longint; var TS: lista);
 Var
 	dir: punt;
@@ -748,30 +787,36 @@ begin
 								res:=true;
 							end
 							else
-								if EsConstParA(lexema) then
+								if EsComa(lexema) then
 								begin
-									compLex:= parA;
+									compLex:= coma;
 									res:=true;
 								end
 								else
-									if EsConstParC(lexema) then
+									if EsConstParA(lexema) then
 									begin
-										compLex:= parC;
+										compLex:= parA;
 										res:=true;
 									end
 									else
-										if EsConstESCRIBIR(lexema) then
+										if EsConstParC(lexema) then
 										begin
-											compLex:= escribir;
+											compLex:= parC;
 											res:=true;
 										end
 										else
-											if EsConstLEER(lexema) then
+											if EsConstESCRIBIR(lexema) then
 											begin
-												compLex:= leer;
+												compLex:= escribir;
 												res:=true;
 											end
-end;
+											else
+												if EsConstLEER(lexema) then
+												begin
+													compLex:= leer;
+													res:=true;
+												end
+	end;
 
 function EsSimbolo(var lexema: string): boolean;
 var
@@ -789,7 +834,7 @@ end;
 Procedure ObtenerSiguienteCompLex(Var archivo:textfile;Var Control:Longint; Var CompLex:TipoComplex;Var Lexema:String;Var TS:lista);
 var
 	T: string;
-	res: boolean; 
+	res: boolean;
 begin
 	repeat																{ buscarCompLex INICIO}
 		T:=leerCaracter(archivo);
@@ -812,7 +857,7 @@ begin
 			else
 				if EsSimbolo(lexema) then
 					revisarSimbolo(lexema, compLex, res)
-				else				
+				else
 					compLex:=ErrorLexico;											{CalcularCompLex FIN}
 end;
 
