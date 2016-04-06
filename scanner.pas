@@ -5,7 +5,6 @@
 			leer					dividido
 			escribir				parA
 			igual					parC
-
 			}
 
 unit scanner;
@@ -174,7 +173,7 @@ Begin
 		control:= auxControl;
 end;
 
-function EsConstReal(var archivo: textfile; var control: Longint; var lexema: string):boolean;
+function EsConstRealpas(var archivo: textfile; var control: Longint; var lexema: string):boolean;
 Const
   q0=0;
   F=[4,2, 7];
@@ -278,7 +277,7 @@ Var
   delta:t_delta;
 	T:char;
 	lexema: string;
-	auxControl: Longint;
+	auxControl: Longint;pas
 
 Function simbLEER(Car:Char):sigma;
 Begin
@@ -549,10 +548,11 @@ Procedure ObtenerSiguienteCompLex(Var archivo:textfile;Var Control:Longint; Var 
 var
 	T: string;								//fijarse el valor del control antes de esta funsion
 begin
-	repeat
+	while T IN [#0..#32] do
+	begin
 		T:=leerCaracter(archivo);
 		control:= control+1;
-	until (T <> ' ');
+	end;
 	control:= control-1;
 	If Simbolo(archivo, control) then
 		EsSimbolo (archivo, control, compLex)
